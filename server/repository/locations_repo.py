@@ -4,6 +4,9 @@ from repository.models import Location
 from sqlalchemy.orm import Session
 
 class LocationRepository(BaseRepository):
+    """
+    Repository for the Location table
+    """
 
     def __init__(self):
         self.session: Session = BaseRepository.session
