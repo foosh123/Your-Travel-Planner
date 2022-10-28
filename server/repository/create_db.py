@@ -8,8 +8,7 @@ load_dotenv(find_dotenv())
 POSTGRES_USER: str = os.getenv("POSTGRES_USER")
 POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD")
 POSTGRES_CONTAINER_PORT: int = int(os.getenv("POSTGRES_CONTAINER_PORT"))
-
-DATABASE_NAME: str = "db"
+DATABASE_NAME: str = os.getenv("DB_NAME")
 
 # connection establishment
 conn = psycopg2.connect(
