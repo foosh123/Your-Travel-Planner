@@ -3,14 +3,28 @@ import os
 
 from logging.config import fileConfig
 
-from sqlalchemy import create_engine
-# from sqlalchemy import engine_from_config, pool
+# from sqlalchemy import create_engine
+from sqlalchemy import engine_from_config, pool
 
 from alembic import context
+
+
+load_dotenv(find_dotenv())
+POSTGRES_USER: str = os.getenv("POSTGRES_USER")
+POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD")
+POSTGRES_CONTAINER_PORT: int = int(os.getenv("POSTGRES_CONTAINER_PORT"))
+DB_NAME: str = os.getenv("DB_NAME")
+DATABASE_URI: str = f"postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@localhost:{POSTGRES_CONTAINER_PORT}/{DB_NAME}"
+
+
+
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
+
+# My addition: replace the sqlalchemy.url from the .ini file with the info from my .env file
+config.set_main_option("sqlalchemy.url", DATABASE_URI)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -21,21 +35,13 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from repository.models import Base
+from models import Base
 target_metadata = [Base.metadata]
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
-
-
-load_dotenv(find_dotenv())
-POSTGRES_USER: str = os.getenv("POSTGRES_USER")
-POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD")
-POSTGRES_CONTAINER_PORT: int = int(os.getenv("POSTGRES_CONTAINER_PORT"))
-DB_NAME: str = os.getenv("DB_NAME")
-DATABASE_URI: str = f"postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@localhost:{POSTGRES_CONTAINER_PORT}/{DB_NAME}"
 
 
 def run_migrations_offline() -> None:
@@ -52,8 +58,8 @@ def run_migrations_offline() -> None:
     """
 
     # Use url from my .env file
-    url = DATABASE_URI
-    # url = config.get_main_option("sqlalchemy.url")
+    # url = DATABASE_URI
+    url = config.get_main_option("sqlalchemy.url")
 
     context.configure(
         url=url,
@@ -75,12 +81,12 @@ def run_migrations_online() -> None:
     """
 
     # Use url from my .env file
-    connectable = create_engine(DATABASE_URI)
-    # connectable = engine_from_config(
-    #     config.get_section(config.config_ini_section),
-    #     prefix="sqlalchemy.",
-    #     poolclass=pool.NullPool,
-    # )
+    # connectable = create_engine(DATABASE_URI)
+    connectable = engine_from_config(
+        config.get_section(config.config_ini_section),
+        prefix="sqlalchemy.",
+        poolclass=pool.NullPool,
+    )
 
     with connectable.connect() as connection:
         context.configure(

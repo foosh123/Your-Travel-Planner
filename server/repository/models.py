@@ -21,7 +21,7 @@ class Locations(Base):
     country = Column(String)
     city = Column(String)
     location_name = Column(String)
-    # location_address = Column(String)
+    location_address = Column(String)
 
 
 if __name__ == '__main__':
