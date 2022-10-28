@@ -1,33 +1,25 @@
-from dotenv import load_dotenv, find_dotenv
-import os
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from repository.base_repo import BaseRepository
 from repository.models import Location
 
+from sqlalchemy.orm import Session
 
-load_dotenv(find_dotenv())
-POSTGRES_USER: str = os.getenv("POSTGRES_USER")
-POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD")
-POSTGRES_CONTAINER_PORT: int = int(os.getenv("POSTGRES_CONTAINER_PORT"))
-DB_NAME: str = os.getenv("DB_NAME")
-DATABASE_URI: str = f"postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@localhost:{POSTGRES_CONTAINER_PORT}/{DB_NAME}"
+class LocationRepository(BaseRepository):
 
-engine = create_engine(DATABASE_URI)
-Session = sessionmaker(bind=engine)
-
-
-class LocationRepository:
+    def __init__(self):
+        self.session: Session = BaseRepository.session
 
     def get_all_locations(self) -> list[Location]:
         """Return all locations from the database"""
-        session = Session()
-        locations = session.query(Location).all()
-        session.close()
+        locations = self.session.query(Location).all()
         return locations
 
+    @BaseRepository.commit_after
     def add_location(self, location: Location) -> None:
         """Add a location to the database"""
-        session = Session()
-        session.add(location)
-        session.commit()
-        session.close()
+        self.session.add(location)
+
+    @BaseRepository.commit_after
+    def delete_location(self, location_id: int) -> None:
+        """Delete a location from the database"""
+        self.session.query(Location).filter(Location.id == location_id).delete()
+
