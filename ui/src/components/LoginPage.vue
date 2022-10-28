@@ -1,5 +1,5 @@
 <template>
-  hi
+  hihi
 </template>
 
 <script>
