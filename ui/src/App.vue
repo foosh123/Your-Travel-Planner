@@ -1,16 +1,12 @@
 <template>
-  <LoginPage msg="Welcome to Your Vue.js App"/>
+    <router-view/>
 </template>
 
 <script>
-import LoginPage from './components/LoginPage.vue'
-
+console.log("in App")
 export default {
-  name: 'App',
-  components: {
-    LoginPage
-  }
-}
+  name: "App",
+};
 </script>
 
 <style>
