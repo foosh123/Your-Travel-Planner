@@ -1,18 +1,17 @@
 <template>
     <NavBar/>
-    <Login/>
-
+    <Signup/>
 </template>
 
 <script>
-import Login from "@/components/LoginPage.vue";
 import NavBar from "@/components/NavBar.vue";
+import Signup from "@/components/SignupPage.vue";
 
 export default{
 name: "LoginPage",
   components: {
-    Login,
-    NavBar
+    NavBar,
+    Signup
   }
 };
 </script>
