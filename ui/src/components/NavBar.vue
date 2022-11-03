@@ -6,9 +6,13 @@
           <img id="logo" src="../assets/logo.jpg" />
         </router-link>
       </li>
+      
       <li style="float:right">    
-        <button id = "login"><b>Login</b></button>
+        <router-link to="/login">
+          <button id = "login"><b>Login</b></button>
+        </router-link>
       </li>
+      
     </ul>
   </nav>
 
@@ -21,9 +25,9 @@
   <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 #logo {
-  width: 120px;
-  height: 40px;
-  margin: 2px;
+  width: 150px;
+  height: 50px;
+  margin: 2%;
 
 }
 

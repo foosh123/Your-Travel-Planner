@@ -8,47 +8,50 @@
               id="email"
               v-model="emailData"
               placeholder="Your Email"
-              size="50"
+              size="60"
             /><br /><br />
             <input
               type="password"
               id="password"
               v-model="passwordData"
               placeholder="Create Password"
-              size="50"
+              size="60"
             /><br /><br />
             <input
               type="username"
               id="username"
               v-model="usernameData"
               placeholder="Select a username"
-              size="50"
+              size="60"
             /><br /><br />
-            <div style ="float:inline-start; padding: 0 20px 0 95px;">
+
+            <div class="float-container">
+            <div class="float-child" style = "padding: 0 20px 0 40px">
             <input
               type="firstname"
               id="firstname"
               v-model="firstnameData"
-              placeholder="FirstName"
-              size="24"
+              placeholder="First Name"
+              size="28"
             /><br /><br />
             </div>
-
-            <div style ="float:left;">
+            <div class="float-child">
             <input
               type="lastname"
               id="lastname"
               v-model="lastnameData"
-              placeholder="LastName"
-              size="23"
+              placeholder="Last Name"
+              size="28"
             /><br /><br />
             </div>
+
+          </div>
             <input
               type="country"
               id="country"
               v-model="countryData"
               placeholder="Country of Residence"
-              size="50"
+              size="60"
             /><br /><br />
 
             <button id="login" type="button" v-on:click="login()">
@@ -124,6 +127,16 @@
       border: 2px solid #E50072;
       padding: 12px 30px;
     }
+
+    .float-container {
+    border: 3px solid #fff;
+    }
+
+    .float-child {
+      padding: 0 20px 0 20px;
+      width: 40%;
+      float: left;
+    } 
     
     </style>
     

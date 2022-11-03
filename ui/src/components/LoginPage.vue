@@ -47,9 +47,12 @@
         >
           Please enter your password
         </p> -->
-        <button id="login" type="button" v-on:click="login()">
+        <router-link to="/login">
+        <button id="login" type="button">
           <span><strong>LOGIN</strong></span>
         </button>
+        </router-link>
+
       </form>
       <p class="tag-line bottom">
         Don't have an account yet? Sign up
