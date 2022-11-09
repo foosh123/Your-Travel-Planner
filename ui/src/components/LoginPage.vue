@@ -19,10 +19,12 @@
         /><br /><br />
 
         <div class="forgot-password">
+          <router-link to="/forgetpassword">
           <a id="password-retrieval" href="" @click="sendPasswordResetEmail"
-            >Forgot Password?</a
-          >
+            >Forgot Password?</a>
+          </router-link>
         </div>
+
         <!-- <p
           class="errorMsg"
           v-if="error == 'Firebase: Error (auth/user-not-found).'"
