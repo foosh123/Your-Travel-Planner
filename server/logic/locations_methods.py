@@ -9,7 +9,14 @@ repo = LocationRepository()
 # ================== Mappers ==================
 
 def location_orm_to_entity(location_orm_obj: LocationORM) -> LocationEntity:
-    return LocationEntity.from_orm(location_orm_obj)
+    # return LocationEntity.from_orm(location_orm_obj)
+    return LocationEntity(
+        id=location_orm_obj.id,
+        country=location_orm_obj.country,
+        city=location_orm_obj.city,
+        location_name=location_orm_obj.location_name,
+        location_address=location_orm_obj.location_address
+    )
 
 def location_entity_to_orm(location_model_obj: LocationEntity) -> LocationORM:
     return LocationORM(**location_model_obj.dict())
