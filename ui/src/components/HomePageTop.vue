@@ -96,7 +96,7 @@ export default {
     },
     methods: {
         async testIntegration() {
-            const result = await fetch('/test');
+            const result = await fetch('https://ytp-backend.onrender.com/test');
             const data = await result.text();
             alert(data);
         }
