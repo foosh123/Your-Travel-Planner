@@ -10,14 +10,20 @@ POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD")
 POSTGRES_CONTAINER_PORT: int = int(os.getenv("POSTGRES_CONTAINER_PORT"))
 DATABASE_NAME: str = os.getenv("DB_NAME")
 
-# connection establishment
-conn = psycopg2.connect(
-   database="postgres",
-    user=POSTGRES_USER,
-    password=POSTGRES_PASSWORD,
-    host="localhost",
-    port=POSTGRES_CONTAINER_PORT
-)
+if os.getenv("ENVIRONMENT") == "production":
+    DATABASE_URI = os.getenv("PROD_DB_URL")
+    conn = psycopg2.connect(DATABASE_URI)
+else:
+    # connection establishment
+    conn = psycopg2.connect(
+    database="postgres",
+        user=POSTGRES_USER,
+        password=POSTGRES_PASSWORD,
+        host="localhost",
+        port=POSTGRES_CONTAINER_PORT
+    )
+
+conn = psycopg2.connect()
   
 conn.autocommit = True
   

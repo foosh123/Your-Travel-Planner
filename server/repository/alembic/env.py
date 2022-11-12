@@ -16,6 +16,8 @@ POSTGRES_CONTAINER_PORT: int = int(os.getenv("POSTGRES_CONTAINER_PORT"))
 DB_NAME: str = os.getenv("DB_NAME")
 DATABASE_URI: str = f"postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@localhost:{POSTGRES_CONTAINER_PORT}/{DB_NAME}"
 
+if os.getenv("ENVIRONMENT") == "production":
+    DATABASE_URI = os.getenv("PROD_DB_URL")
 
 
 
