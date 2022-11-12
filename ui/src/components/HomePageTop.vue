@@ -21,7 +21,7 @@
         <br>
         <div class = column><img style = 'margin-top: 10px;' id="globe" src="../assets/HomePage/globe.png" /> </div>
         <div class = column><img style = 'margin-top: 10px;' id="customize" src="../assets/HomePage/customize.png"/></div>
-        <div class = column><img style = 'margin-top: 10px;' id="plane" src="../assets/HomePage/plane.png" /></div>
+        <div class = column><img style = 'margin-top: 10px;' id="plane" src="../assets/HomePage/plane.png" v-on:click="testIntegration" /></div>
     </div>
    
         
@@ -84,3 +84,22 @@
     padding-bottom: 160px;
 }
 </style>
+
+<script>
+
+export default {
+    name: 'HomePageTop',
+    data: function() {
+        return {
+            
+        }
+    },
+    methods: {
+        async testIntegration() {
+            const result = await fetch('/test');
+            const data = await result.text();
+            alert(data);
+        }
+    }
+}
+</script>

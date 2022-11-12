@@ -6,6 +6,7 @@ class Location(BaseModel):
     city: str
     location_name: str
     location_address: str
-    # class Config:
-    #     orm_mode = True
+
+    class Config:
+        orm_mode = True
 

@@ -2,4 +2,8 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from "./router/index.js";
 
-createApp(App).use(router).mount('#app');
+// const cors = require('cors');
+
+const app = createApp(App);
+// app.use(cors());
+app.use(router).mount('#app');

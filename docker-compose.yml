@@ -1,6 +1,27 @@
 
 version: '3.8'
 services:
+
+  backend:
+    ports: 
+      - '${SERVER_HOST_PORT}:${SERVER_CONTAINER_PORT}'
+    volumes:
+      - ./server:/container-server
+    build: /server
+    environment:
+      WAIT_HOSTS: db:${POSTGRES_CONTAINER_PORT} 
+    env_file:
+      - .env
+
+  frontend:
+    ports: 
+      - '${CLIENT_HOST_PORT}:${CLIENT_CONTAINER_PORT}'
+    volumes:
+      - ./ui:/container-client
+    build: /ui
+    env_file:
+      - .env
+
   db:
     container_name: postgres_container
     image: postgres:14.1-alpine
@@ -29,3 +50,5 @@ volumes:
   db-data:
     driver: local
   pgadmin-data:
+  server:
+  ui:

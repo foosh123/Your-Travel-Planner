@@ -7,5 +7,5 @@ class LocationController(Controller):
     path = "/locations"
 
     @get()
-    async def list_locations(self) -> list[Location]:
+    async def get_all_locations(self) -> list[Location]:
         return get_locations()
