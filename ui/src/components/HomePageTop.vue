@@ -20,7 +20,7 @@
         <div class = column><h1 style = 'font-size: 20px;'> <b> Let's f*ucking go! </b> </h1></div>
         <br>
         <div class = column><img style = 'margin-top: 10px;' id="globe" src="../assets/HomePage/globe.png" /> </div>
-        <div class = column><img style = 'margin-top: 10px;' id="customize" src="../assets/HomePage/customize.png" v-on:click="checkURL"/></div>
+        <div class = column><img style = 'margin-top: 10px;' id="customize" src="../assets/HomePage/customize.png"/></div>
         <div class = column><img style = 'margin-top: 10px;' id="plane" src="../assets/HomePage/plane.png" v-on:click="testIntegration" /></div>
     </div>
    
@@ -86,25 +86,26 @@
 </style>
 
 <script>
+import axios from "axios";
 
 export default {
-    name: 'HomePageTop',
+    name: "HomePageTop",
     data: function() {
         return {
-            isProduction: process.env.VUE_APP_ENVIRONMENT === 'production',
+            isProduction: process.env.VUE_APP_ENVIRONMENT === "production",
             BACKEND_URL: this.isProduction ? process.env.VUE_APP_PROD_BACKEND_URL : process.env.VUE_APP_DEV_BACKEND_URL,
         }
     },
     methods: {
-        checkURL() {
-            console.log(process.env);
-            console.log(this.BACKEND_URL);
-        },
         async testIntegration() {
-            const testApiUrl = this.BACKEND_URL + "/test";
-            const result = await fetch(testApiUrl);
-            const data = await result.text();
-            alert(data);
+            try {
+                const testApiUrl = "/test";
+                const result = await axios.get(testApiUrl);
+                const data = result.data;
+                console.log(data);
+            } catch (error) {
+                console.log(error);
+            }
         }
     }
 }

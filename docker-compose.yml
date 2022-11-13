@@ -8,8 +8,8 @@ services:
     volumes:
       - ./server:/container-server
     build: /server
-    environment:
-      WAIT_HOSTS: db:${POSTGRES_CONTAINER_PORT} 
+    # environment:
+    #   WAIT_HOSTS: db:${POSTGRES_CONTAINER_PORT} 
     env_file:
       - .env
 
