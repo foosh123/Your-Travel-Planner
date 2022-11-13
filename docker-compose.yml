@@ -19,36 +19,34 @@ services:
     volumes:
       - ./ui:/container-client
     build: /ui
-    env_file:
-      - .env
 
-  db:
-    container_name: postgres_container
-    image: postgres:14.1-alpine
-    restart: always
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    ports:
-      - '${POSTGRES_HOST_PORT}:${POSTGRES_CONTAINER_PORT}'
-    volumes: 
-      - db-data:/var/lib/postgresql/data
+  # db:
+  #   container_name: postgres_container
+  #   image: postgres:14.1-alpine
+  #   restart: always
+  #   environment:
+  #     POSTGRES_USER: ${POSTGRES_USER}
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  #   ports:
+  #     - '${POSTGRES_HOST_PORT}:${POSTGRES_CONTAINER_PORT}'
+  #   volumes: 
+  #     - db-data:/var/lib/postgresql/data
 
-  pgadmin:
-    container_name: pgadmin4_container
-    image: dpage/pgadmin4
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-    ports:
-      - "5050:80"
-    volumes:
-      - pgadmin-data:/var/lib/pgadmin
+  # pgadmin:
+  #   container_name: pgadmin4_container
+  #   image: dpage/pgadmin4
+  #   restart: always
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+  #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+  #   ports:
+  #     - "5050:80"
+  #   volumes:
+  #     - pgadmin-data:/var/lib/pgadmin
 
 volumes:
-  db-data:
-    driver: local
-  pgadmin-data:
+  # db-data:
+  #   driver: local
+  # pgadmin-data:
   server:
   ui:

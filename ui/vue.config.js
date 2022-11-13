@@ -1,17 +1,26 @@
-const { defineConfig } = require('@vue/cli-service')
+const { defineConfig } = require('@vue/cli-service');
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 module.exports = defineConfig({
   transpileDependencies: true,
-  devServer: {
-    proxy: {
-      '^/': {
-        // for local development, won't work after building
-        target: 'http://localhost:8000',
-        changeOrigin: true,
-        ws: false,
-        pathRewrite: {
-          '^/': '/'
-        },
-      }
-    }
+  configureWebpack: {
+    plugins: [new NodePolyfillPlugin()],
+    optimization: {
+      splitChunks: {
+        chunks: "all",
+      },
+    },
   },
+  // devServer: {
+  //   proxy: {
+  //     '^/': {
+  //       // for local development, won't work after building
+  //       target: process.env.VUE_APP_DEV_BACKEND_URL,
+  //       changeOrigin: true,
+  //       ws: false,
+  //       pathRewrite: {
+  //         '^/': '/'
+  //       },
+  //     }
+  //   }
+  // },
 })
