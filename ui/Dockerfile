@@ -1,5 +1,7 @@
 FROM node:14
 
+ENV HOST=0.0.0.0
+
 # install simple http server for serving static content
 RUN npm install -g http-server
 
@@ -16,6 +18,10 @@ RUN npm install
 COPY . /container-ui/
 
 # build app for production with minification
-RUN npm run build
+# RUN npm run build
 
-CMD [ "http-server", "dist" ]
+# CMD [ "http-server", "dist" ]
+CMD [ "npm", "run", "serve" ]
+
+# RUN npm install nodemon
+# CMD ["nodemon", "--ext", "js,css,vue", "--watch src", "--exec", "npm", "run", "serve" ]

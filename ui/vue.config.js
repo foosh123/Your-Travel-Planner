@@ -10,17 +10,4 @@ module.exports = defineConfig({
       },
     },
   },
-  // devServer: {
-  //   proxy: {
-  //     '^/': {
-  //       // for local development, won't work after building
-  //       target: process.env.VUE_APP_DEV_BACKEND_URL,
-  //       changeOrigin: true,
-  //       ws: false,
-  //       pathRewrite: {
-  //         '^/': '/'
-  //       },
-  //     }
-  //   }
-  // },
 })

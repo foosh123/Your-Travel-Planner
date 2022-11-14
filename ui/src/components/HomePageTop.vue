@@ -1,7 +1,7 @@
 <template>
     <div id = top>
         <div id = title><h1 style = 'font-size: 50px'> <b> LETS F*CKING GO! </b> </h1></div>
-        <div id = description><h1 style = 'font-size: 20px'><b> Travel planning made convenient </b></h1></div>
+        <div id = description><h1 style = 'font-size: 20px'><b> Travel planning made convenient! </b></h1></div>
         <div id = buttons>
             <button id="first" type="button">
                 <span><strong>Start planning</strong></span>
@@ -92,12 +92,10 @@ export default {
     name: "HomePageTop",
     data: function() {
         return {
-            isProduction: process.env.VUE_APP_ENVIRONMENT === "production",
-            BACKEND_URL: this.isProduction ? process.env.VUE_APP_PROD_BACKEND_URL : process.env.VUE_APP_DEV_BACKEND_URL,
         }
     },
     methods: {
-        async testIntegration() {
+        testIntegration: async function() {
             try {
                 const testApiUrl = "/test";
                 const result = await axios.get(testApiUrl);
@@ -106,7 +104,7 @@ export default {
             } catch (error) {
                 console.log(error);
             }
-        }
-    }
+        },
+    },
 }
 </script>

@@ -32,6 +32,8 @@ const routes = [
     component: ResetPasswordPage,
   },
 ]
+
+// https://www.digitalocean.com/community/tutorials/vuejs-advanced-vue-routing
 const router = createRouter({
     history: createWebHistory(),
     routes,

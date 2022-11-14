@@ -7,10 +7,21 @@
         </router-link>
       </li>
       
-      <li style="float:right">    
-        <router-link to="/login">
-          <button id = "login"><b>Login</b></button>
-        </router-link>
+      <li style="float:right">
+        
+        <!-- TODO: check expiry, and store in this store object instead of using variable -->
+        <!-- <template v-if="this.$store.state.user.loggedIn"> -->
+        <template v-if="isAuthenticated">
+          <router-link to="/">
+            <button id = "logout" v-on:click="logout"><b>Logout</b></button>
+          </router-link>
+        </template>
+        <template v-else>
+          <router-link to="/login">
+            <button id = "login"><b>Login</b></button>
+          </router-link>
+        </template>
+
       </li>
       
     </ul>
@@ -37,7 +48,7 @@ nav {
   margin-bottom: 20px;
 } 
 
-#login {
+#login, #logout {
   color: #E50072;
   box-sizing: border-box;
   border-radius: 8px;
@@ -91,3 +102,42 @@ nav li a {
 } */
 
 </style>
+
+<script>
+import axios from "axios";
+
+export default {
+    data: function() {
+        return {
+            isAuthenticated: false,
+        }
+    },
+    methods: {
+        checkAuthenticated: async function() {
+        // call api get with cookies
+        // check if jwt in cookies
+        const jwt = this.$cookies.get("jwt");
+        const result = await axios.get("/auth/check-authenticated", {
+          headers: {
+            Authorization: jwt,
+          }
+        });
+        this.isAuthenticated = result.data;
+      },
+      logout: async function() {
+        const jwt = this.$cookies.get("jwt");
+        // const result = await axios.post("/auth/logout", {}, {
+        //   headers: {
+        //     Authorization: jwt,
+        //   }
+        // });
+        this.$cookies.remove("jwt");
+        this.isAuthenticated = false;
+        this.$router.push("/");
+      },
+    },
+    mounted: function() {
+        this.checkAuthenticated();
+    }
+}
+</script>
