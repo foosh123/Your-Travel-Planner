@@ -1,5 +1,4 @@
-import { createRouter } from "vue-router";
-// import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 import ConfirmPage from "@/views/ConfirmPage.vue";
 import LoginPage from "@/views/LoginPage.vue";
 import SignupPage from "@/views/SignupPage.vue";
@@ -37,7 +36,7 @@ const routes = [
 
 // https://www.digitalocean.com/community/tutorials/vuejs-advanced-vue-routing
 const router = createRouter({
-    // history: createWebHistory(),
+    history: createWebHistory(),
     routes,
 });
 
