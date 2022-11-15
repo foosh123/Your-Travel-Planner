@@ -1,4 +1,5 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter } from "vue-router";
+// import { createRouter, createWebHistory } from "vue-router";
 import ConfirmPage from "@/views/ConfirmPage.vue";
 import LoginPage from "@/views/LoginPage.vue";
 import SignupPage from "@/views/SignupPage.vue";
