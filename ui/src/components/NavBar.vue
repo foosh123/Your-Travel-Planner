@@ -13,7 +13,7 @@
         <!-- <template v-if="this.$store.state.user.loggedIn"> -->
         <template v-if="isAuthenticated">
           <router-link to="/">
-            <button id = "logout" v-on:click="logout"><b>Logout</b></button>
+            <button id = "logout" v-on:click="logout"><b>{{username}} - logout</b></button>
           </router-link>
         </template>
         <template v-else>
@@ -108,36 +108,36 @@ import axios from "axios";
 
 export default {
     data: function() {
-        return {
-            isAuthenticated: false,
-        }
+      return {
+        isAuthenticated: false,
+        username: "",
+      }
     },
     methods: {
-        checkAuthenticated: async function() {
-        // call api get with cookies
-        // check if jwt in cookies
-        const jwt = this.$cookies.get("jwt");
-        const result = await axios.get("/auth/check-authenticated", {
-          headers: {
-            Authorization: jwt,
-          }
-        });
-        this.isAuthenticated = result.data;
-      },
-      logout: async function() {
-        const jwt = this.$cookies.get("jwt");
-        // const result = await axios.post("/auth/logout", {}, {
-        //   headers: {
-        //     Authorization: jwt,
-        //   }
-        // });
-        this.$cookies.remove("jwt");
-        this.isAuthenticated = false;
-        this.$router.push("/");
-      },
+      checkAuthenticated: async function() {
+      // call api get with cookies
+      // check if jwt in cookies
+      const jwt = this.$cookies.get("jwt");
+      const result = await axios.get("/auth/check-authenticated", {
+        headers: {
+          Authorization: jwt,
+        }
+      });      
+      this.isAuthenticated = result.data.is_authenticated;
+      if (this.isAuthenticated) {
+        // this.$store.commit("setUser", result.data.user);
+        this.username = result.data.user.username;
+      }
     },
-    mounted: function() {
-        this.checkAuthenticated();
-    }
+    logout: async function() {
+      const jwt = this.$cookies.get("jwt");
+      this.$cookies.remove("jwt");
+      this.isAuthenticated = false;
+      this.$router.push("/");
+    },
+  },
+  mounted: function() {
+    this.checkAuthenticated();
+  }
 }
 </script>

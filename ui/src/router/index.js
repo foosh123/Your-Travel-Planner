@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import ConfirmPage from "@/views/ConfirmPage.vue";
 import LoginPage from "@/views/LoginPage.vue";
 import SignupPage from "@/views/SignupPage.vue";
 import HomePage from "@/views/HomePage.vue";
@@ -10,11 +11,6 @@ const routes = [
     path: "/login",
     name: "LoginPage",
     component: LoginPage,
-  },
-  {
-    path: '/',
-    name: "HomePage",
-    component: HomePage,
   },
   {
     path: "/signup",
@@ -31,11 +27,25 @@ const routes = [
     name: "ResetPassword",
     component: ResetPasswordPage,
   },
+  {
+    path: '/',
+    name: "HomePage",
+    component: HomePage,
+  },
 ]
 
 // https://www.digitalocean.com/community/tutorials/vuejs-advanced-vue-routing
 const router = createRouter({
     history: createWebHistory(),
     routes,
-  });
-  export default router;
+});
+
+router.addRoute(
+  {
+    path: "/confirm/:token?",
+    name: "ConfirmPage",
+    component: ConfirmPage,
+  },
+);
+
+export default router;

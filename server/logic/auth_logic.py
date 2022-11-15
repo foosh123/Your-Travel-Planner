@@ -1,6 +1,7 @@
 from controllers.auth_controller import UserCreatePayload, UserLoginPayload
 from exceptions.exceptions import DataAlreadyExistsException, InvalidCredentialsException, NoSuchDataException
 from logic.classes import User
+from logic.helper_methods import send_account_creation_confirmation_email
 from repository.auth_repo import AuthRepository
 
 import bcrypt
@@ -61,12 +62,29 @@ class AuthHandler:
     # ================== Public Methods ==================
 
     @staticmethod
-    def add_user(user_create_dto: UserCreatePayload) -> None:
+    def add_unconfirmed_user(user_create_dto: UserCreatePayload) -> None:
         user_model: User = AuthHandler._user_create_payload_to_entity(user_create_dto)
         try:
-            AuthHandler.repo.add_user(user_model)
+            AuthHandler.repo.add_unconfirmed_user(user_model)
         except Exception as e:  # TODO: check for right exception
+            print(str(e))
             raise DataAlreadyExistsException("User already exists")
+        else:
+            id_for_confirmation: str = str(user_model.id)
+            email_for_confirmation: str = user_model.email
+            send_account_creation_confirmation_email(email_for_confirmation, id_for_confirmation)
+
+    @staticmethod
+    def confirm_user(user_id: str) -> None:
+        try:
+            user_uuid = UUID(user_id)
+        except ValueError:
+            raise InvalidCredentialsException("Invalid confirmation code")
+        else:
+            has_unconfirmed_user: bool = AuthHandler.repo.check_valid_unconfirmed_user(user_uuid)
+            if has_unconfirmed_user is False:
+                raise NoSuchDataException("User does not exist")
+            AuthHandler.repo.confirm_user(user_uuid)
 
     @staticmethod
     def get_user_by_credentials(user_login_dto: UserLoginPayload) -> User:

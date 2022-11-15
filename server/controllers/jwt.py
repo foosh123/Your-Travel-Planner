@@ -1,19 +1,11 @@
 from datetime import datetime, timedelta
-from dotenv import load_dotenv, find_dotenv
 import jwt
-import os
 from pydantic import BaseModel
 import time
 from uuid import UUID
 
+from env_vars import SECRET_KEY, DEFAULT_TIME_DELTA
 from exceptions.exceptions import InvalidJWTException
-
-
-load_dotenv(find_dotenv())
-
-# SECRET_KEY: str = os.getenv("COOKIE_ENCRYPT_SECRET_KEY") 
-SECRET_KEY: str = "abcdefghijklmnop"
-DEFAULT_TIME_DELTA: timedelta = timedelta(days=1)
 
 
 # https://auth0.com/blog/how-to-handle-jwt-in-python/

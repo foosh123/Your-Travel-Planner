@@ -1,6 +1,3 @@
-from dotenv import load_dotenv, find_dotenv
-import os
-
 from logging.config import fileConfig
 
 # from sqlalchemy import create_engine
@@ -9,16 +6,7 @@ from sqlalchemy import engine_from_config, pool
 from alembic import context
 
 
-load_dotenv(find_dotenv())
-# POSTGRES_USER: str = os.getenv("POSTGRES_USER")
-# POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD")
-# POSTGRES_CONTAINER_PORT: int = int(os.getenv("POSTGRES_CONTAINER_PORT"))
-# DB_NAME: str = os.getenv("DB_NAME")
-# DATABASE_URI: str = f"postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@localhost:{POSTGRES_CONTAINER_PORT}/{DB_NAME}"
-
-# if os.getenv("ENVIRONMENT") == "production":
-DATABASE_URI = os.getenv("PROD_DB_URL")
-
+from env_vars import DATABASE_URI
 
 
 # this is the Alembic Config object, which provides

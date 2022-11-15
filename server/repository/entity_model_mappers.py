@@ -1,5 +1,5 @@
 
-from repository.models import Location as LocationORM, User as UserORM
+from repository.models import Location as LocationORM, User as UserORM, UnconfirmedUser as UnconfirmedUserORM
 from logic.classes import Location as LocationEntity, User as UserEntity
 
 def model_to_dict(model_obj):
@@ -28,5 +28,9 @@ def user_model_to_entity(user_orm_obj: UserORM) -> UserEntity:
     user_entity_details: dict = model_to_dict(user_orm_obj)
     return UserEntity(**user_entity_details)
 
-def user_entity_to_model(user_model_obj: UserEntity) -> UserORM:
-    return UserORM(**user_model_obj.dict())
+def user_entity_to_unconfirmed_user_model(user_model_obj: UserEntity) -> UnconfirmedUserORM:
+    return UnconfirmedUserORM(**user_model_obj.dict())
+
+def unconfirmed_user_model_to_user_model(unconfirmed_user_model_obj: UnconfirmedUserORM) -> UserORM:
+    unconfirmed_user_entity_details: dict = model_to_dict(unconfirmed_user_model_obj)
+    return UserORM(**unconfirmed_user_entity_details)

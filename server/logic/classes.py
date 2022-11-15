@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Any
 from uuid import UUID
 
 class ORMBaseModel(BaseModel):
@@ -21,3 +22,14 @@ class User(BaseModel):
     first_name: str
     last_name: str
     country_of_residence: str
+
+    def to_json_safe_dict(self) -> dict[str, Any]:
+        details: dict[str, Any] = self.dict()
+
+        # convert UUID to string
+        details["id"] = str(details["id"])
+
+        # drop password
+        details.pop("password")
+
+        return details

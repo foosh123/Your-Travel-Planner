@@ -1,21 +1,8 @@
-from dotenv import load_dotenv, find_dotenv
 import functools
-import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 
-
-load_dotenv(find_dotenv())
-# POSTGRES_USER: str = os.getenv("POSTGRES_USER")
-# POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD")
-# POSTGRES_CONTAINER_PORT: int = int(os.getenv("POSTGRES_CONTAINER_PORT"))
-# POSTGRES_CONTAINER_NAME: str = os.getenv("POSTGRES_CONTAINER_NAME")
-# DB_NAME: str = os.getenv("DB_NAME")
-# DATABASE_URI: str = f"postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@localhost:{POSTGRES_CONTAINER_PORT}/{DB_NAME}"
-# DATABASE_URI: str = f"postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_CONTAINER_NAME}:{POSTGRES_CONTAINER_PORT}/{DB_NAME}"
-
-# if os.getenv("ENVIRONMENT") == "production":
-DATABASE_URI = os.getenv("PROD_DB_URL")
+from env_vars import DATABASE_URI
 
 class BaseRepository:
     engine = create_engine(DATABASE_URI)

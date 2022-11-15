@@ -1,20 +1,14 @@
-from dotenv import load_dotenv, find_dotenv
-import os
 from starlite import Controller, Request, get, post
 from starlite import AbstractAuthenticationMiddleware, AuthenticationResult, ASGIConnection
+from typing import Any
 from uuid import UUID
 
 from controllers.jwt import JWTToken
 from controllers.payloads import UserCreatePayload, UserLoginPayload
+from env_vars import AUTHORIZATION_HEADER
 from exceptions.exceptions import InvalidJWTException
 from logic.auth_logic import AuthHandler
 from logic.classes import User
-
-load_dotenv(find_dotenv())
-
-# SECRET_KEY: str = os.getenv("COOKIE_ENCRYPT_SECRET_KEY") 
-SECRET_KEY: str = "abcdefghijklmnop"
-AUTHORIZATION_HEADER: str = "Authorization"
 
 
 # ================= Auth logic =================
@@ -58,7 +52,11 @@ class AuthController(Controller):
 
     @post(path="/register", exclude_from_auth=True)
     async def create_user(self, data: UserCreatePayload) -> None:
-        AuthHandler.add_user(data)
+        AuthHandler.add_unconfirmed_user(data)
+
+    @get(path="/confirm-register/{user_uuid: str}", exclude_from_auth=True)
+    async def confirm_user(self, user_uuid: str) -> None:
+        AuthHandler.confirm_user(user_uuid)
 
     @post(path="/login", exclude_from_auth=True)
     async def login(self, data: UserLoginPayload) -> dict[str, str]:
@@ -66,8 +64,12 @@ class AuthController(Controller):
         return {"jwt": JWTToken.encode(user.id)}
 
     @get(path="/check-authenticated")
-    async def check_authenticated(self, request: Request[User, JWTToken]) -> bool:
-        return request.auth is not None
+    async def check_authenticated(self, request: Request[User, JWTToken]) -> dict[str, Any]:
+        result: dict[str, Any] = {
+            "is_authenticated": request.auth is not None,
+            "user": {} if request.auth is None else request.user.to_json_safe_dict(),
+        }
+        return result
 
     @get(path="/check-authenticated-2")
     async def check_authenticated_2(self, request: Request[User, JWTToken]) -> bool:

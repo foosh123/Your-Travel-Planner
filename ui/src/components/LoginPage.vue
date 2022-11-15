@@ -144,7 +144,6 @@ export default {
       login: async function() {
           try {
             this.resetDisplay();
-            console.log("login");
             const addUserApiUrl = "/auth/login";
             const result = await axios.post(addUserApiUrl, this.loginFormData);
             const data = result.data;

@@ -196,15 +196,8 @@ export default {
           try {
             this.resetDisplay();
             const addUserApiUrl = "/auth/register";
-            const result = await axios.post(addUserApiUrl, this.signUpFormData);
-            const data = result.data;
-            this.setSuccessDisplay("Account created successfully!");
-
-            // wait a while, then redirect
-            setTimeout(() => {
-              this.$router.push("/login");
-            }, 2000);
-
+            await axios.post(addUserApiUrl, this.signUpFormData);
+            this.setSuccessDisplay("Check your email for a confirmation link!");
           } catch (error) {
             this.setErrorDisplay(error.response.data.message);
           }

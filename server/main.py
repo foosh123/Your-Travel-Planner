@@ -5,18 +5,7 @@ from controllers.auth_controller import AuthController, JWTAuthenticationMiddleW
 from controllers.index import TestController
 from controllers.location_controller import LocationController
 from exceptions.starlite_exception_handlers import exception_handler_map
-
-from dotenv import load_dotenv, find_dotenv
-import os
-
-load_dotenv(find_dotenv())
-
-FRONTEND_URL: str
-if os.getenv("ENVIRONMENT") == "development":
-    FRONTEND_URL = os.getenv("DEV_FRONTEND_URL")
-else:
-    FRONTEND_URL = os.getenv("PROD_FRONTEND_URL")
-
+from env_vars import FRONTEND_URL
 
 
 # Can optionally exclude certain paths from authentication.
