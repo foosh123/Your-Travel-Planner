@@ -2,39 +2,22 @@
 version: '3.8'
 services:
 
-  # backend:
-  #   ports: 
-  #     - '${SERVER_HOST_PORT}:${SERVER_CONTAINER_PORT}'
-  #   volumes:
-  #     - ./server:/container-server
-  #   build: /server
-  #   # environment:
-  #   #   WAIT_HOSTS: db:${POSTGRES_CONTAINER_PORT} 
-  #   env_file:
-  #     - .env
+  backend:
+    ports: 
+      - '${SERVER_HOST_PORT}:${SERVER_CONTAINER_PORT}'
+    volumes:
+      - ./server:/container-server
+    build: /server
 
-  # frontend:
-  #   ports: 
-  #     - '${CLIENT_HOST_PORT}:${CLIENT_CONTAINER_PORT}'
-  #   volumes:
-  #     - ./ui:/container-client
-  #     - /container-client/node_modules/
-  #     # - ./ui/src:/container-client/src
-  #   build: /ui
-  #   environment:
-  #     - CHOKIDAR_USEPOLLING=true
-
-  # db:
-  #   container_name: postgres_container
-  #   image: postgres:14.1-alpine
-  #   restart: always
-  #   environment:
-  #     POSTGRES_USER: ${POSTGRES_USER}
-  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-  #   ports:
-  #     - '${POSTGRES_HOST_PORT}:${POSTGRES_CONTAINER_PORT}'
-  #   volumes: 
-  #     - db-data:/var/lib/postgresql/data
+  frontend:
+    ports: 
+      - '${CLIENT_HOST_PORT}:${CLIENT_CONTAINER_PORT}'
+    volumes:
+      - ./ui:/container-client
+      - /container-client/node_modules/
+    build: /ui
+    environment:
+      - CHOKIDAR_USEPOLLING=true
 
   pgadmin:
     container_name: pgadmin4_container
@@ -49,8 +32,6 @@ services:
       - pgadmin-data:/var/lib/pgadmin
 
 volumes:
-  # db-data:
-  #   driver: local
   pgadmin-data:
-  # server:
-  # ui:
+  server:
+  ui:
