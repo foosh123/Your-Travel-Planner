@@ -1,26 +1,23 @@
 <template>
     <div id="container">
-        <form id="form">
-          <p><H1>Please Enter Your Email</H1></p>
-          <form class="credentials">
+        <form id="form" class="credentials">
+          <div v-if="displayDetails.showDisplay" class="display" v-bind:style="displayDetails.displayStyle">
+            <p>{{ displayDetails.message }}</p>
+          </div>
+          <h1><p>Please Enter Your Email</p></h1>
             <input
               type="email"
               id="email"
-              v-model="emailData"
+              v-model="data.email"
               placeholder="Email"
               size="35"
             /><br/>
-          </form>
+            <button id="forget" type="button" v-on:click="submitForgotPassword">
+              <span><strong>CONFIRM</strong></span>
+            </button>
         </form>    
-        <button id="login" type="button">
-          <span><strong>CONFIRM</strong></span>
-        </button>   
-     
       </div>
 </template>
-    <script>
-    
-    </script>
     
     <!-- Add "scoped" attribute to limit CSS to this component only -->
     <style scoped>
@@ -29,6 +26,18 @@
       text-align: center;
       position: relative;
       bottom: 50px;
+    }
+    
+    /* ------- Display Message ------- */
+    .display {
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+      height: 50px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     
     /* ------- Sign up form box ------- */
@@ -67,7 +76,7 @@
       color: #63a4ff;
     }
     
-    #login {
+    #forget {
       color: #E50072;
       box-sizing: border-box;
       border-radius: 8px;
@@ -80,4 +89,56 @@
     }
     
     </style>
-    
+
+<script>
+
+import axios from "axios";
+
+export default {
+    name: "ForgetPassword",
+    data: function() {
+        return {
+            data: {
+                email: "",
+            },
+            displayDetails: {
+              showDisplay: false,
+              message: "",
+              displayStyle: {
+                backgroundColor: "white",
+              },
+            },
+        }
+    },
+    methods: {
+      submitForgotPassword: async function() {
+          try {
+            this.resetDisplay();
+            const forgotPasswordApiUrl = "/auth/forgot-password";
+            await axios.post(forgotPasswordApiUrl, this.data);
+            this.setSuccessDisplay("Check your email for a reset link!");
+          } catch (error) {
+            this.setErrorDisplay(error.response.data.message);
+          }
+      },
+      setDisplay: function(message) {
+        this.displayDetails.showDisplay = true;
+        this.displayDetails.message = message;
+      },
+      resetDisplay: function() {
+        this.displayDetails.showDisplay = false;
+        this.displayDetails.message = "";
+        this.displayDetails.displayStyle.backgroundColor = "white";
+      },
+      setSuccessDisplay: function(message) {
+        this.displayDetails.displayStyle.backgroundColor = "green";
+        this.setDisplay(message);
+      },
+      setErrorDisplay: function(message) {
+        this.displayDetails.displayStyle.backgroundColor = "red";
+        this.setDisplay(message);
+      },
+    }
+}
+
+</script>

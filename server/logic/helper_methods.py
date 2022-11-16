@@ -22,6 +22,13 @@ def send_account_creation_confirmation_email(dest_email_addr: str, user_id: str,
     send_email(dest_email_addr, subject, body, user_name)
 
 
+def send_password_reset_email(email: str, reset_token: str) -> None:
+    reset_url: str = urllib.parse.urljoin(FRONTEND_URL, f"/reset_password/{reset_token}")
+    subject: str = "Password reset"
+    body: str = f"Please reset your password by clicking the following link: {reset_url}"
+    send_email(email, subject, body)
+
+
 def send_email(email: str, subject: str, body: str, user_name: str = "") -> None:
 
     try:

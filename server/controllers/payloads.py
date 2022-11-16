@@ -52,3 +52,17 @@ class UserCreatePayload(BaseModel):
 class UserLoginPayload(BaseModel):
     username_or_email: str
     password: str
+
+class PasswordForgetPayload(BaseModel):
+    email: str
+
+class ResetPasswordPayload(BaseModel):
+    request_id: str
+    password: str
+    password_confirm: str
+
+    @validator("password_confirm")
+    def passwords_match(cls, v, values, **kwargs):
+        if "password" in values and v != values["password"]:
+            raise InvalidInputException("Passwords do not match")
+        return v

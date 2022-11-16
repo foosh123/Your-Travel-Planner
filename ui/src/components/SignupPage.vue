@@ -211,8 +211,6 @@ export default {
     name: "HomePageTop",
     data: function() {
         return {
-            isProduction: process.env.VUE_APP_ENVIRONMENT === "production",
-            BACKEND_URL: this.isProduction ? process.env.VUE_APP_PROD_BACKEND_URL : process.env.VUE_APP_DEV_BACKEND_URL,
             signUpFormData: {
               email: "",
               password: "",

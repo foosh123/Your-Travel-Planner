@@ -1,7 +1,7 @@
 from controllers.auth_controller import UserCreatePayload, UserLoginPayload
 from exceptions.exceptions import DataAlreadyExistsException, InvalidInputException, NoSuchDataException
 from logic.classes import User
-from logic.helper_methods import is_valid_email_addr, send_account_creation_confirmation_email
+from logic.helper_methods import is_valid_email_addr, send_account_creation_confirmation_email, send_password_reset_email
 from logic.user_logic import UserHandler
 from repository.vars import auth_repo, user_repo
 
@@ -15,12 +15,17 @@ class AuthHandler:
 
     # ================== Private Methods ==================
     @staticmethod
+    def _hash_password(password: str) -> bytes:
+        byte_password: bytes = password.encode("utf-8")
+        hashed_password: bytes = bcrypt.hashpw(byte_password, bcrypt.gensalt())
+        return hashed_password
+
+    @staticmethod
     def _user_create_payload_to_entity(user_create_dto: UserCreatePayload) -> User:
 
         user_entity_id: UUID = uuid4()
         raw_password: str = user_create_dto.password
-        byte_password: bytes = raw_password.encode("utf-8")
-        hashed_password: bytes = bcrypt.hashpw(byte_password, bcrypt.gensalt())
+        hashed_password: bytes = AuthHandler._hash_password(raw_password)
 
         return User(
             id=user_entity_id,
@@ -105,3 +110,53 @@ class AuthHandler:
             raise InvalidInputException("Invalid username / password")
 
         return db_user
+
+    @staticmethod
+    def send_password_reset_email(email: str) -> None:
+        user_model: User | None = user_repo.get_user_by_email(email)
+        if user_model is None:
+
+            # For security purposes, we don't want to tell the user if the email is not registered
+            # raise NoSuchDataException("User does not exist")
+            return
+        
+        user_id: UUID = user_model.id
+        unique_reset_id: UUID = auth_repo.add_password_reset_request(user_id)
+        unique_reset_id_str: str = str(unique_reset_id)
+        send_password_reset_email(email, unique_reset_id_str)
+
+    @staticmethod
+    def verify_reset_token(reset_token: str) -> None:
+        try:
+            reset_token_uuid: UUID = UUID(reset_token)
+        except ValueError:
+            raise InvalidInputException("Invalid reset token")
+        else:
+            is_valid_token: bool = auth_repo.check_valid_password_reset_request(reset_token_uuid)
+            if is_valid_token is False:
+                raise InvalidInputException("Invalid reset token")
+
+    @staticmethod
+    def reset_password(reset_token: str, new_password: str) -> None:
+        try:
+            reset_token_uuid: UUID = UUID(reset_token)
+        except ValueError:
+            raise InvalidInputException("Invalid reset token")
+        else:
+            is_valid_token: bool = auth_repo.check_valid_password_reset_request(reset_token_uuid)
+            if is_valid_token is False:
+                raise InvalidInputException("Invalid reset token")
+
+        # Get user from reset token
+        user_id: UUID = auth_repo.get_user_id_from_reset_token(reset_token_uuid)
+        user_entity: User = user_repo.get_user_by_uuid(user_id)
+
+        # Update user
+        new_password: bytes = AuthHandler._hash_password(new_password)
+        user_entity.password = new_password
+
+        # Delete reset token
+        auth_repo.delete_password_reset_request(reset_token_uuid)
+
+        # Update user in database
+        user_repo.update_user(user_entity)

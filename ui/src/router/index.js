@@ -19,14 +19,9 @@ const routes = [
     component: SignupPage,
   },
   {
-    path: "/forgetpassword",
+    path: "/forget_password",
     name: "ForgetPassword",
     component: ForgetPasswordPage,
-  },
-  {
-    path: "/resetpassword",
-    name: "ResetPassword",
-    component: ResetPasswordPage,
   },
   {
     path: "/admin",
@@ -53,5 +48,13 @@ router.addRoute(
     component: ConfirmPage,
   },
 );
+
+router.addRoute(
+  {
+    path: "/reset_password/:token?",
+    name: "ResetPassword",
+    component: ResetPasswordPage,
+  },
+)
 
 export default router;

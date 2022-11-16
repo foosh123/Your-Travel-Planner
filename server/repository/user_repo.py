@@ -1,6 +1,6 @@
 from logic.classes import User as UserEntity
 from repository.base_repo import BaseRepository
-from repository.entity_model_mappers import unconfirmed_user_model_to_user_model, user_model_to_entity
+from repository.entity_model_mappers import unconfirmed_user_model_to_user_model, user_entity_to_user_model, user_model_to_entity
 from repository.models import User as UserModel, UnconfirmedUser as UnconfirmedUserModel
 
 from sqlalchemy.orm import Session
@@ -67,3 +67,12 @@ class UserRepository(BaseRepository):
         uu_model: UnconfirmedUserModel | None = self.session.query(UnconfirmedUserModel).filter_by(id=user_uuid).first()
         if uu_model is not None:
             self.session.delete(uu_model)
+
+    @BaseRepository.commit_after
+    def update_user(self, user_entity: UserEntity) -> None:
+
+        old_user_data: UserModel = self.session.query(UserModel).filter_by(id=user_entity.id).first()
+        self.session.delete(old_user_data)
+
+        new_user_data: UserModel = user_entity_to_user_model(user_entity)
+        self.session.add(new_user_data)
