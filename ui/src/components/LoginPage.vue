@@ -22,7 +22,7 @@
         /><br /><br />
 
         <div class="forgot-password">
-          <router-link to="/forgetpassword">
+          <router-link to="/forget_password">
           <a id="password-retrieval" href="" @click="sendPasswordResetEmail"
             >Forgot Password?</a>
           </router-link>

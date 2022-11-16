@@ -1,4 +1,4 @@
-from sqlalchemy import Column, LargeBinary, String
+from sqlalchemy import Column, DateTime, LargeBinary, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -32,3 +32,9 @@ class UnconfirmedUser(Base):
     first_name = Column(String)
     last_name = Column(String)
     country_of_residence = Column(String)
+
+class PasswordResetRequest(Base):
+    __tablename__ = "PasswordResetRequest"
+    id = Column(UUID(as_uuid=True), primary_key=True)
+    user_id = Column(UUID(as_uuid=True))
+    reset_code_expiration = Column(DateTime)

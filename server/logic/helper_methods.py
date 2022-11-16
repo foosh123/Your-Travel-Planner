@@ -22,6 +22,13 @@ def send_account_creation_confirmation_email(dest_email_addr: str, user_id: str,
     send_email(dest_email_addr, subject, body, user_name)
 
 
+def send_password_reset_email(email: str, reset_token: str) -> None:
+    reset_url: str = urllib.parse.urljoin(FRONTEND_URL, f"/reset_password/{reset_token}")
+    subject: str = "Password reset"
+    body: str = f"Please reset your password by clicking the following link: {reset_url}"
+    send_email(email, subject, body)
+
+
 def send_email(email: str, subject: str, body: str, user_name: str = "") -> None:
 
     try:
@@ -35,23 +42,6 @@ def send_email(email: str, subject: str, body: str, user_name: str = "") -> None
         print(str(e))
         raise EmailNotSentException("Email could not be sent")
 
-# def send_email(email: str, subject: str, body: str) -> None:
 
-#     try:
-    
-#         # add MIME headers
-#         message = MIMEMultipart()
-#         message["From"] = EMAIL_FROM
-#         message["To"] = email
-#         message["Subject"] = subject
-#         message.attach(MIMEText(body, "plain"))
-
-#         # send email
-#         context = ssl.create_default_context()
-#         with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-#             server.login(EMAIL_FROM, EMAIL_PASSWORD)
-#             server.sendmail(EMAIL_FROM, email, message.as_string())
-
-#     except Exception as e:
-#         print("here")
-#         print(str(e))
+def is_valid_email_addr(email_address: str) -> bool:
+    return "@" in email_address  # TODO: improve this

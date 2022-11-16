@@ -5,9 +5,12 @@ from sqlalchemy import engine_from_config, pool
 
 from alembic import context
 
+from dotenv import load_dotenv, find_dotenv
+import os
 
-from env_vars import DATABASE_URI
+load_dotenv(find_dotenv())
 
+DATABASE_URI = os.getenv("PROD_DB_URL")
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

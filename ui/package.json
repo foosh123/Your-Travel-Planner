@@ -13,7 +13,8 @@
     "node-polyfill-webpack-plugin": "^2.0.1",
     "vue": "^3.2.13",
     "vue-cookies": "^1.8.2",
-    "vue-router": "^4.1.6"
+    "vue-router": "^4.1.6",
+    "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

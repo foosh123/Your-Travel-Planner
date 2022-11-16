@@ -4,10 +4,11 @@ from typing import Any
 from uuid import UUID
 
 from controllers.jwt import JWTToken
-from controllers.payloads import UserCreatePayload, UserLoginPayload
+from controllers.payloads import PasswordForgetPayload, ResetPasswordPayload, UserCreatePayload, UserLoginPayload
 from env_vars import AUTHORIZATION_HEADER
 from exceptions.exceptions import InvalidJWTException
 from logic.auth_logic import AuthHandler
+from logic.user_logic import UserHandler
 from logic.classes import User
 
 
@@ -40,7 +41,7 @@ class JWTAuthenticationMiddleWare(AbstractAuthenticationMiddleware):
 
             # retrieve user
             user_id: UUID = token.user_id
-            user: User | None = AuthHandler._get_user_by_uuid(UUID(user_id))
+            user: User | None = UserHandler.get_user_by_uuid(UUID(user_id))
             if user is None:
                 return AuthenticationResult(user=None, auth=None)
 
@@ -62,6 +63,18 @@ class AuthController(Controller):
     async def login(self, data: UserLoginPayload) -> dict[str, str]:
         user: User = AuthHandler.get_user_by_credentials(data)
         return {"jwt": JWTToken.encode(user.id)}
+
+    @post(path="/forgot-password", exclude_from_auth=True)
+    async def forgot_password(self, data: PasswordForgetPayload) -> None:
+        AuthHandler.send_password_reset_email(data.email)
+
+    @get(path="/verify-reset-token/{request_uuid: str}", exclude_from_auth=True)
+    async def verify_reset_token(self, request_uuid: str) -> None:
+        AuthHandler.verify_reset_token(request_uuid)
+
+    @post(path="/reset-password", exclude_from_auth=True)
+    async def reset_password(self, data: ResetPasswordPayload) -> None:
+        AuthHandler.reset_password(data.request_id, data.password)
 
     @get(path="/check-authenticated")
     async def check_authenticated(self, request: Request[User, JWTToken]) -> dict[str, Any]:

@@ -1,6 +1,6 @@
 from starlite import Request, Response
 
-from exceptions.exceptions import DataAlreadyExistsException, EmailNotSentException, InvalidCredentialsException, NoSuchDataException
+from exceptions.exceptions import DataAlreadyExistsException, EmailNotSentException, InvalidInputException, NoSuchDataException
 
 
 def handle_data_already_exists_exception(_: Request, exc: Exception) -> Response:
@@ -15,9 +15,9 @@ def handle_no_such_data_exception(_: Request, exc: Exception) -> Response:
         content={"message": str(exc)},
     )
 
-def handle_invalid_credentials_exception(_: Request, exc: Exception) -> Response:
+def handle_invalid_input_exception(_: Request, exc: Exception) -> Response:
     return Response(
-        status_code=401,
+        status_code=400,
         content={"message": str(exc)},
     )
 
@@ -30,6 +30,6 @@ def handle_email_not_sent_exception(_: Request, exc: Exception) -> Response:
 exception_handler_map = {
     DataAlreadyExistsException: handle_data_already_exists_exception,
     NoSuchDataException: handle_no_such_data_exception,
-    InvalidCredentialsException: handle_invalid_credentials_exception,
+    InvalidInputException: handle_invalid_input_exception,
     EmailNotSentException: handle_email_not_sent_exception,
 }

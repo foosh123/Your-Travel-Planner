@@ -1,10 +1,13 @@
 from logic.classes import User as UserEntity
 from repository.base_repo import BaseRepository
-from repository.entity_model_mappers import user_entity_to_unconfirmed_user_model, user_model_to_entity, unconfirmed_user_model_to_user_model
-from repository.models import User as UserModel, UnconfirmedUser as UnconfirmedUserModel
+from repository.entity_model_mappers import user_entity_to_unconfirmed_user_model, unconfirmed_user_model_to_user_model
+from repository.models import User as UserModel, UnconfirmedUser as UnconfirmedUserModel, PasswordResetRequest as PasswordResetRequestModel
 
+from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
-from uuid import UUID
+from uuid import uuid4, UUID
+
+RESET_CODE_EXPIRATION_TIME_IN_MINUTES: int = 30
 
 class AuthRepository(BaseRepository):
     """
@@ -39,30 +42,49 @@ class AuthRepository(BaseRepository):
         user_model: UserModel = unconfirmed_user_model_to_user_model(unconfirmed_user_model)
         self.session.add(user_model)
 
+    @BaseRepository.commit_after
+    def add_password_reset_request(self, user_id: UUID) -> UUID:
+        """Add a password reset request, returns a unique ID that can be used to associate to this request"""
 
-    def get_user_by_uuid(self, user_id: UUID) -> UserEntity | None:
-        """Get a user by its UUID"""
-        user_model: UserModel | None = self.session.query(UserModel).filter_by(id=user_id).first()
-        if user_model is None:
+        # Create a request
+        request_id: UUID = uuid4()
+        current_time: datetime = datetime.now()
+        expiration_time: datetime = current_time + timedelta(minutes=RESET_CODE_EXPIRATION_TIME_IN_MINUTES)
+        new_request: PasswordResetRequestModel = PasswordResetRequestModel(
+            id=request_id,
+            user_id=user_id,
+            reset_code_expiration=expiration_time
+        )
+
+        # Add the request
+        self.session.add(new_request)
+
+        # Return the request ID
+        return request_id
+
+    def check_valid_password_reset_request(self, request_id: UUID) -> bool:
+        """Check if a password reset request is valid"""
+
+        result: PasswordResetRequestModel | None = self.session.query(PasswordResetRequestModel).filter_by(id=request_id).first()
+        if result is None:
+            return False
+
+    def get_user_id_from_reset_token(self, request_id: UUID) -> UUID:
+        """Get the user ID from a password reset token"""
+
+        result: PasswordResetRequestModel | None = self.session.query(PasswordResetRequestModel).filter_by(id=request_id).first()
+        if result is None:
             return None
 
-        user_entity: UserEntity = user_model_to_entity(user_model)
-        return user_entity
+        return result.user_id
 
-    def get_user_by_username(self, username: str) -> UserEntity | None:
-        """Get a user by its username"""
-        user_model: UserModel | None = self.session.query(UserModel).filter_by(username=username).first()
-        if user_model is None:
+
+    @BaseRepository.commit_after
+    def delete_password_reset_request(self, request_id: UUID) -> None:
+        """Delete a password reset request"""
+
+        result: PasswordResetRequestModel | None = self.session.query(PasswordResetRequestModel).filter_by(id=request_id).first()
+        if result is None:
             return None
 
-        user_entity: UserEntity = user_model_to_entity(user_model)
-        return user_entity
-
-    def get_user_by_email(self, email: str) -> UserEntity | None:
-        """Get a user by its email"""
-        user_model: UserModel | None = self.session.query(UserModel).filter_by(email=email).first()
-        if user_model is None:
-            return None
-
-        user_entity: UserEntity = user_model_to_entity(user_model)
-        return user_entity
+        self.session.delete(result)

@@ -28,6 +28,9 @@ def user_model_to_entity(user_orm_obj: UserORM) -> UserEntity:
     user_entity_details: dict = model_to_dict(user_orm_obj)
     return UserEntity(**user_entity_details)
 
+def user_entity_to_user_model(user_model_obj: UserEntity) -> UserORM:
+    return UserORM(**user_model_obj.dict())
+
 def user_entity_to_unconfirmed_user_model(user_model_obj: UserEntity) -> UnconfirmedUserORM:
     return UnconfirmedUserORM(**user_model_obj.dict())
 

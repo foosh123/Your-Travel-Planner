@@ -5,6 +5,7 @@ import SignupPage from "@/views/SignupPage.vue";
 import HomePage from "@/views/HomePage.vue";
 import ForgetPasswordPage from "@/views/ForgetPassword.vue";
 import ResetPasswordPage from "@/views/ResetPassword.vue";
+import AdminPage from "@/views/Admin.vue";
 
 const routes = [
   {
@@ -18,14 +19,14 @@ const routes = [
     component: SignupPage,
   },
   {
-    path: "/forgetpassword",
+    path: "/forget_password",
     name: "ForgetPassword",
     component: ForgetPasswordPage,
   },
   {
-    path: "/resetpassword",
-    name: "ResetPassword",
-    component: ResetPasswordPage,
+    path: "/admin",
+    name: "Admin",
+    component: AdminPage,
   },
   {
     path: '/',
@@ -47,5 +48,13 @@ router.addRoute(
     component: ConfirmPage,
   },
 );
+
+router.addRoute(
+  {
+    path: "/reset_password/:token?",
+    name: "ResetPassword",
+    component: ResetPasswordPage,
+  },
+)
 
 export default router;
