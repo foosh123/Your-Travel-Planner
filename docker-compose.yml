@@ -2,22 +2,22 @@
 version: '3.8'
 services:
 
-  backend:
-    ports: 
-      - '${SERVER_HOST_PORT}:${SERVER_CONTAINER_PORT}'
-    volumes:
-      - ./server:/container-server
-    build: /server
+  # backend:
+  #   ports: 
+  #     - '${SERVER_HOST_PORT}:${SERVER_CONTAINER_PORT}'
+  #   volumes:
+  #     - ./server:/container-server
+  #   build: /server
 
-  frontend:
-    ports: 
-      - '${CLIENT_HOST_PORT}:${CLIENT_CONTAINER_PORT}'
-    volumes:
-      - ./ui:/container-client
-      - /container-client/node_modules/
-    build: /ui
-    environment:
-      - CHOKIDAR_USEPOLLING=true
+  # frontend:
+  #   ports: 
+  #     - '${CLIENT_HOST_PORT}:${CLIENT_CONTAINER_PORT}'
+  #   volumes:
+  #     - ./ui:/container-client
+  #     - /container-client/node_modules/
+  #   build: /ui
+  #   environment:
+  #     - CHOKIDAR_USEPOLLING=true
 
   pgadmin:
     container_name: pgadmin4_container

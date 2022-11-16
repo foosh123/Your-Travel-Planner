@@ -35,23 +35,6 @@ def send_email(email: str, subject: str, body: str, user_name: str = "") -> None
         print(str(e))
         raise EmailNotSentException("Email could not be sent")
 
-# def send_email(email: str, subject: str, body: str) -> None:
 
-#     try:
-    
-#         # add MIME headers
-#         message = MIMEMultipart()
-#         message["From"] = EMAIL_FROM
-#         message["To"] = email
-#         message["Subject"] = subject
-#         message.attach(MIMEText(body, "plain"))
-
-#         # send email
-#         context = ssl.create_default_context()
-#         with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-#             server.login(EMAIL_FROM, EMAIL_PASSWORD)
-#             server.sendmail(EMAIL_FROM, email, message.as_string())
-
-#     except Exception as e:
-#         print("here")
-#         print(str(e))
+def is_valid_email_addr(email_address: str) -> bool:
+    return "@" in email_address  # TODO: improve this

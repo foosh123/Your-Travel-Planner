@@ -1,7 +1,7 @@
 from controllers.auth_controller import UserCreatePayload, UserLoginPayload
 from exceptions.exceptions import DataAlreadyExistsException, InvalidInputException, NoSuchDataException
 from logic.classes import User
-from logic.helper_methods import send_account_creation_confirmation_email
+from logic.helper_methods import is_valid_email_addr, send_account_creation_confirmation_email
 from logic.user_logic import UserHandler
 from repository.vars import auth_repo, user_repo
 
@@ -40,22 +40,31 @@ class AuthHandler:
         return user_model.password
 
     @staticmethod
-    def _is_email_address(input_string: str) -> bool:
-        return "@" in input_string  # TODO: improve this
+    def _verify_user_name_does_not_exist(user_name: str) -> None:
+        user_model: User | None = user_repo.get_user_by_username(user_name)
+        if user_model is not None:
+            raise DataAlreadyExistsException("User name already exists")
+
+    @staticmethod
+    def _verify_email_does_not_exist(email: str) -> None:
+        user_model: User | None = user_repo.get_user_by_email(email)
+        if user_model is not None:
+            raise DataAlreadyExistsException("Email already exists")
 
     # ================== Public Methods ==================
 
     @staticmethod
     def add_unconfirmed_user(user_create_dto: UserCreatePayload) -> None:
         user_model: User = AuthHandler._user_create_payload_to_entity(user_create_dto)
-        try:
-            auth_repo.add_unconfirmed_user(user_model)
-        except Exception as e:  # TODO: check for right exception
-            raise DataAlreadyExistsException("User already exists")
-        else:
-            id_for_confirmation: str = str(user_model.id)
-            email_for_confirmation: str = user_model.email
-            send_account_creation_confirmation_email(email_for_confirmation, id_for_confirmation)
+
+        user_name_to_add: str = user_model.username
+        email_to_add: str = user_model.email
+        AuthHandler._verify_user_name_does_not_exist(user_name_to_add)
+        AuthHandler._verify_email_does_not_exist(email_to_add)
+
+        auth_repo.add_unconfirmed_user(user_model)
+        id_for_confirmation: str = str(user_model.id)
+        send_account_creation_confirmation_email(email_to_add, id_for_confirmation)
 
     @staticmethod
     def confirm_user(user_id: str) -> None:
@@ -77,7 +86,7 @@ class AuthHandler:
 
         # Check if user exists
         db_user: User | None
-        if AuthHandler._is_email_address(username_or_email):
+        if is_valid_email_addr(username_or_email):
             db_user = UserHandler.get_user_by_email(username_or_email)
         else:
             db_user = UserHandler.get_user_by_username(username_or_email)
