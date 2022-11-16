@@ -5,6 +5,7 @@ import SignupPage from "@/views/SignupPage.vue";
 import HomePage from "@/views/HomePage.vue";
 import ForgetPasswordPage from "@/views/ForgetPassword.vue";
 import ResetPasswordPage from "@/views/ResetPassword.vue";
+import AdminPage from "@/views/Admin.vue";
 
 const routes = [
   {
@@ -26,6 +27,11 @@ const routes = [
     path: "/resetpassword",
     name: "ResetPassword",
     component: ResetPasswordPage,
+  },
+  {
+    path: "/admin",
+    name: "Admin",
+    component: AdminPage,
   },
   {
     path: '/',

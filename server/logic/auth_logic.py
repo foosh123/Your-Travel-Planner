@@ -1,8 +1,9 @@
 from controllers.auth_controller import UserCreatePayload, UserLoginPayload
-from exceptions.exceptions import DataAlreadyExistsException, InvalidCredentialsException, NoSuchDataException
+from exceptions.exceptions import DataAlreadyExistsException, InvalidInputException, NoSuchDataException
 from logic.classes import User
 from logic.helper_methods import send_account_creation_confirmation_email
-from repository.auth_repo import AuthRepository
+from logic.user_logic import UserHandler
+from repository.vars import auth_repo, user_repo
 
 import bcrypt
 from uuid import uuid4, UUID
@@ -11,8 +12,6 @@ from uuid import uuid4, UUID
 
 
 class AuthHandler:
-
-    repo = AuthRepository()
 
     # ================== Private Methods ==================
     @staticmethod
@@ -35,7 +34,7 @@ class AuthHandler:
 
     @staticmethod
     def _get_password_of_user(user_entity: User) -> bytes | None:
-        user_model: User | None = AuthHandler._get_user_by_uuid(user_entity)
+        user_model: User | None = user_repo.get_user_by_uuid(user_entity)
         if user_model is None:
             return None
         return user_model.password
@@ -44,30 +43,14 @@ class AuthHandler:
     def _is_email_address(input_string: str) -> bool:
         return "@" in input_string  # TODO: improve this
 
-    @staticmethod
-    def _get_user_by_uuid(user_id: UUID) -> User | None:
-        db_user: User | None = AuthHandler.repo.get_user_by_uuid(user_id)
-        return db_user
-
-    @staticmethod
-    def _get_user_by_username(username: str) -> User | None:
-        db_user: User | None = AuthHandler.repo.get_user_by_username(username)
-        return db_user
-
-    @staticmethod
-    def _get_user_by_email(email: str) -> User | None:
-        db_user: User | None = AuthHandler.repo.get_user_by_email(email)
-        return db_user
-
     # ================== Public Methods ==================
 
     @staticmethod
     def add_unconfirmed_user(user_create_dto: UserCreatePayload) -> None:
         user_model: User = AuthHandler._user_create_payload_to_entity(user_create_dto)
         try:
-            AuthHandler.repo.add_unconfirmed_user(user_model)
+            auth_repo.add_unconfirmed_user(user_model)
         except Exception as e:  # TODO: check for right exception
-            print(str(e))
             raise DataAlreadyExistsException("User already exists")
         else:
             id_for_confirmation: str = str(user_model.id)
@@ -77,14 +60,14 @@ class AuthHandler:
     @staticmethod
     def confirm_user(user_id: str) -> None:
         try:
-            user_uuid = UUID(user_id)
+            user_uuid: UUID = UUID(user_id)
         except ValueError:
-            raise InvalidCredentialsException("Invalid confirmation code")
+            raise InvalidInputException("Invalid confirmation code")
         else:
-            has_unconfirmed_user: bool = AuthHandler.repo.check_valid_unconfirmed_user(user_uuid)
+            has_unconfirmed_user: bool = auth_repo.check_valid_unconfirmed_user(user_uuid)
             if has_unconfirmed_user is False:
                 raise NoSuchDataException("User does not exist")
-            AuthHandler.repo.confirm_user(user_uuid)
+            auth_repo.confirm_user(user_uuid)
 
     @staticmethod
     def get_user_by_credentials(user_login_dto: UserLoginPayload) -> User:
@@ -95,12 +78,12 @@ class AuthHandler:
         # Check if user exists
         db_user: User | None
         if AuthHandler._is_email_address(username_or_email):
-            db_user = AuthHandler._get_user_by_email(username_or_email)
+            db_user = UserHandler.get_user_by_email(username_or_email)
         else:
-            db_user = AuthHandler._get_user_by_username(username_or_email)
+            db_user = UserHandler.get_user_by_username(username_or_email)
 
         if db_user is None:
-            raise InvalidCredentialsException("Invalid username / password")
+            raise InvalidInputException("Invalid username / password")
 
         # If username exists, check password
         relevant_password: bytes = db_user.password
@@ -110,6 +93,6 @@ class AuthHandler:
         is_password_correct: bool = bcrypt.checkpw(byte_password_query, relevant_password)
 
         if is_password_correct is False:
-            raise InvalidCredentialsException("Invalid username / password")
+            raise InvalidInputException("Invalid username / password")
 
         return db_user

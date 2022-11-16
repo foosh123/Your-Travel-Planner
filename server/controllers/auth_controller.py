@@ -8,6 +8,7 @@ from controllers.payloads import UserCreatePayload, UserLoginPayload
 from env_vars import AUTHORIZATION_HEADER
 from exceptions.exceptions import InvalidJWTException
 from logic.auth_logic import AuthHandler
+from logic.user_logic import UserHandler
 from logic.classes import User
 
 
@@ -40,7 +41,7 @@ class JWTAuthenticationMiddleWare(AbstractAuthenticationMiddleware):
 
             # retrieve user
             user_id: UUID = token.user_id
-            user: User | None = AuthHandler._get_user_by_uuid(UUID(user_id))
+            user: User | None = UserHandler.get_user_by_uuid(UUID(user_id))
             if user is None:
                 return AuthenticationResult(user=None, auth=None)
 

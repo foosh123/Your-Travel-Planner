@@ -4,6 +4,7 @@ from starlite.middleware.base import DefineMiddleware
 from controllers.auth_controller import AuthController, JWTAuthenticationMiddleWare
 from controllers.index import TestController
 from controllers.location_controller import LocationController
+from controllers.user_controller import UserController
 from exceptions.starlite_exception_handlers import exception_handler_map
 from env_vars import FRONTEND_URL
 
@@ -14,7 +15,7 @@ auth_middleware = DefineMiddleware(JWTAuthenticationMiddleWare, exclude="schema"
 
 
 app = Starlite(
-    route_handlers=[AuthController, TestController, LocationController],
+    route_handlers=[AuthController, LocationController, TestController, UserController],
     exception_handlers=exception_handler_map,
     cors_config=CORSConfig(
         allow_origins=["*"],  # temp fix
